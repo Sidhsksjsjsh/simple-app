@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="card_radius">24dp</dimen>
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="button_height">58dp</dimen>
+</resources>

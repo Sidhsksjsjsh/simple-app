@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">Nexus AI</string>
+    <string name="header_title">NEXUS AI</string>
+    <string name="tab_home">Home</string>
+    <string name="tab_analytics">Analytics</string>
+    <string name="tab_spoof">Location Spoof</string>
+    <string name="tab_settings">Settings</string>
+    <string name="longitude">Longitude</string>
+    <string name="latitude">Latitude</string>
+    <string name="loc_sect">Location Spoof</string>
+    <string name="header_subtitle">✦ Neural Control Interface v4.2.0</string>
+
+    <string name="section_identity">Operator Identity</string>
+    <string name="section_config">System Configuration</string>
+    <string name="section_mode">Select AI Mode</string>
+    <string name="section_log">System Information Log</string>
+
+    <string name="label_username">Username</string>
+    <string name="placeholder_username">Enter name…</string>
+    <string name="neural_active">Neural Mode Active</string>
+    <string name="system_optimal">System running optimal</string>
+    <string name="system_idle">System in idle mode</string>
+    <string name="processor_intensity">Processor Intensity</string>
+    <string name="operation_mode">Operation Mode</string>
+
+    <string name="button_run">RUN SYSTEM</string>
+    <string name="button_notify">SEND NOTIFICATION</string>
+
+    <string name="dialog_title">Execution Confirmation</string>
+    <string name="dialog_confirm">EXECUTE</string>
+    <string name="dialog_cancel">CANCEL</string>
+
+    <string name="log_empty">System ready. No activity recorded in this session.\n\nUse the controls above to interact with the Nexus AI neural core.</string>
+    <string name="log_clear">Clear history</string>
+
+    <string name="notif_title">⚡ Nexus AI</string>
+    <string name="notif_channel">Nexus AI Core</string>
+    <string name="notif_channel_desc">Nexus AI system notifications</string>
+</resources>
