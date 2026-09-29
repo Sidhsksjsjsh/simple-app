@@ -2,10 +2,17 @@ package com.nexus.ai.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
@@ -27,11 +34,13 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nexus.ai.ui.theme.*
+import kotlinx.coroutines.launch
 
 data class NavItem(
     val icon: ImageVector,
@@ -47,7 +56,7 @@ fun LiquidGlassNavBar(
 ) {
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
         horizontalAlignment = Alignment.End
     ) {
         items.forEachIndexed { index, item ->
@@ -68,15 +77,19 @@ private fun LiquidGlassNavButton(
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    val scope = rememberCoroutineScope()
+
+    // ── Ukuran tombol (spring bouncy saat dipilih) ─────────
     val size by animateDpAsState(
-        targetValue = if (selected) 62.dp else 54.dp,
+        targetValue = if (selected) 62.dp else 52.dp,
         animationSpec = spring(
             dampingRatio = Spring.DampingRatioLowBouncy,
             stiffness = Spring.StiffnessMediumLow
         ),
-        label = "fab_size"
+        label = "size"
     )
 
+    // ── Scale ikon (bounce) ────────────────────────────────
     val iconScale by animateFloatAsState(
         targetValue = if (selected) 1.15f else 1f,
         animationSpec = spring(
@@ -86,64 +99,158 @@ private fun LiquidGlassNavButton(
         label = "icon_scale"
     )
 
+    // ── Warna ikon ─────────────────────────────────────────
     val iconTint by animateColorAsState(
         targetValue = if (selected) Color.White else TextSoft,
+        animationSpec = tween(220),
         label = "icon_tint"
+    )
+
+    // ── Rotasi halus saat dipilih ──────────────────────────
+    val iconRotation by animateFloatAsState(
+        targetValue = if (selected) 4f else 0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = "icon_rotation"
+    )
+
+    // ── Skala "press" saat ditekan ─────────────────────────
+    val pressScale = remember { Animatable(1f) }
+
+    // ── Pulse ring animasi untuk tab yang dipilih ─────────
+    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
+    val pulseScale by infiniteTransition.animateFloat(
+        initialValue = 1.0f,
+        targetValue = 1.35f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1800, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "pulse_scale"
+    )
+    val pulseAlpha by infiniteTransition.animateFloat(
+        initialValue = 0.55f,
+        targetValue = 0.0f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(1800, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "pulse_alpha"
     )
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
-        // Label pill (muncul saat aktif)
+        // ── Label pill (muncul saat aktif) ─────────────────
         AnimatedVisibility(
             visible = selected,
-            enter = fadeIn() + slideInHorizontally { it / 2 },
-            exit = fadeOut() + slideOutHorizontally { it / 2 }
+            enter = fadeIn(tween(200)) +
+                slideInHorizontally(tween(260)) { it / 2 },
+            exit = fadeOut(tween(150)) +
+                slideOutHorizontally(tween(200)) { it / 2 }
         ) {
-            LiquidGlassPill(
+            Box(
                 modifier = Modifier
                     .padding(end = 10.dp)
-                    .height(32.dp)
-            ) {
-                Box(
-                    modifier = Modifier.padding(horizontal = 14.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = label,
-                        color = Color.White,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 0.6.sp
+                    .height(34.dp)
+                    .clip(RoundedCornerShape(17.dp))
+                    .background(
+                        Brush.linearGradient(
+                            listOf(
+                                Color(0x40FFFFFF),
+                                Color(0x18FFFFFF),
+                                NeonCyan.copy(alpha = 0.25f)
+                            )
+                        )
                     )
-                }
+                    .border(
+                        width = 0.8.dp,
+                        brush = Brush.linearGradient(
+                            listOf(
+                                Color(0xCCFFFFFF),
+                                Color(0x22FFFFFF),
+                                NeonCyan.copy(alpha = 0.6f)
+                            )
+                        ),
+                        shape = RoundedCornerShape(17.dp)
+                    )
+                    .padding(horizontal = 14.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = label,
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 0.6.sp
+                )
             }
         }
 
-        // Tombol bulat liquid glass
+        // ── Tombol utama ────────────────────────────────────
         Box(
             modifier = Modifier
                 .size(size)
+                .graphicsLayer {
+                    scaleX = pressScale.value
+                    scaleY = pressScale.value
+                }
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = onClick
-                ),
+                    indication = null
+                ) {
+                    // Press animation
+                    scope.launch {
+                        pressScale.animateTo(
+                            0.9f,
+                            animationSpec = tween(80)
+                        )
+                        pressScale.animateTo(
+                            1f,
+                            animationSpec = spring(
+                                dampingRatio = Spring.DampingRatioMediumBouncy,
+                                stiffness = Spring.StiffnessMedium
+                            )
+                        )
+                    }
+                    onClick()
+                },
             contentAlignment = Alignment.Center
         ) {
-            // Outer glow saat selected
+            // ── Pulse ring (hanya selected) ─────────────────
             if (selected) {
                 Box(
                     Modifier
                         .matchParentSize()
-                        .scale(1.2f)
+                        .graphicsLayer {
+                            scaleX = pulseScale
+                            scaleY = pulseScale
+                            alpha = pulseAlpha
+                        }
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.5.dp,
+                            color = NeonCyan.copy(alpha = 0.6f),
+                            shape = CircleShape
+                        )
+                )
+            }
+
+            // ── Outer glow (radial) — hanya selected ────────
+            if (selected) {
+                Box(
+                    Modifier
+                        .matchParentSize()
+                        .scale(1.35f)
                         .clip(CircleShape)
                         .background(
                             Brush.radialGradient(
                                 colors = listOf(
-                                    NeonViolet.copy(alpha = 0.55f),
-                                    NeonCyan.copy(alpha = 0.20f),
+                                    NeonViolet.copy(alpha = 0.45f),
+                                    NeonCyan.copy(alpha = 0.18f),
                                     Color.Transparent
                                 )
                             )
@@ -151,12 +258,12 @@ private fun LiquidGlassNavButton(
                 )
             }
 
-            // Liquid glass circle
+            // ── Liquid glass circle utama ───────────────────
             LiquidGlassPill(
                 modifier = Modifier.matchParentSize(),
                 shape = CircleShape
             ) {
-                // Kalau selected, tambahkan tint ungu
+                // Tint ungu-cyan saat aktif
                 if (selected) {
                     Box(
                         Modifier
@@ -165,15 +272,33 @@ private fun LiquidGlassNavButton(
                             .background(
                                 Brush.linearGradient(
                                     listOf(
-                                        NeonPurple.copy(alpha = 0.55f),
-                                        NeonBlue.copy(alpha = 0.35f),
-                                        NeonCyan.copy(alpha = 0.45f)
+                                        NeonPurple.copy(alpha = 0.65f),
+                                        NeonBlue.copy(alpha = 0.45f),
+                                        NeonCyan.copy(alpha = 0.55f)
+                                    )
+                                )
+                            )
+                    )
+
+                    // Specular dot tambahan di atas
+                    Box(
+                        Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 6.dp)
+                            .size(width = 20.dp, height = 6.dp)
+                            .clip(CircleShape)
+                            .background(
+                                Brush.verticalGradient(
+                                    listOf(
+                                        Color.White.copy(alpha = 0.75f),
+                                        Color.White.copy(alpha = 0.0f)
                                     )
                                 )
                             )
                     )
                 }
 
+                // Icon
                 Box(
                     Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -184,7 +309,11 @@ private fun LiquidGlassNavButton(
                         tint = iconTint,
                         modifier = Modifier
                             .size(22.dp)
-                            .scale(iconScale)
+                            .graphicsLayer {
+                                scaleX = iconScale
+                                scaleY = iconScale
+                                rotationZ = iconRotation
+                            }
                     )
                 }
             }

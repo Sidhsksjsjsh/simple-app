@@ -236,18 +236,18 @@ fun LocationTab() {
         log(if (granted) "✅ Izin coarse diberikan" else "⚠️ Izin coarse ditolak")
     }
 
-    val fineLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        log(if (granted) "✅ Izin fine diberikan" else "⚠️ Izin fine ditolak")
-        if (!granted) {
-            NotificationHelper.send(
-                context,
-                context.getString(R.string.notif_title),
-                "⚠️ Izin lokasi presisi ditolak. Spoofing mungkin tidak berfungsi."
-            )
-        }
-    }
+    // val fineLauncher = rememberLauncherForActivityResult(
+    //     ActivityResultContracts.RequestPermission()
+    // ) { granted ->
+    //     log(if (granted) "✅ Izin fine diberikan" else "⚠️ Izin fine ditolak")
+    //     if (!granted) {
+    //         NotificationHelper.send(
+    //             context,
+    //             context.getString(R.string.notif_title),
+    //             "⚠️ Izin lokasi presisi ditolak. Spoofing mungkin tidak berfungsi."
+    //         )
+    //     }
+    // }
 
     LaunchedEffect(Unit) {
         if (ContextCompat.checkSelfPermission(
@@ -256,12 +256,9 @@ fun LocationTab() {
         ) {
             coarseLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
         }
-        if (ContextCompat.checkSelfPermission(
-                context, Manifest.permission.ACCESS_FINE_LOCATION
-            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
-        ) {
-            fineLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-        }
+        // if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+        //     fineLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        // }
     }
 
     // ===== UI =====

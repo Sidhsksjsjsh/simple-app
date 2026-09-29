@@ -27,3 +27,17 @@ val GlassRimSoft    = Color(0x1FFFFFFF)   // rim light lembut
 val GlassChromaticA = Color(0x248B5CF6)   // chromatic tint ungu
 val GlassChromaticB = Color(0x1F22D3EE)   // chromatic tint cyan
 val GlassShadow     = Color(0x33000000)   // ambient shadow
+
+// ===== Liquid Glass palette (iOS 26 style) =====
+val GlassBase          = Color(0x14FFFFFF)
+val GlassBaseBright    = Color(0x1FFFFFFF)
+val GlassBaseDeep      = Color(0x0AFFFFFF)
+val GlassSpecular      = Color(0x66FFFFFF)   // highlight terang
+val GlassSpecularSoft  = Color(0x1AFFFFFF)
+val GlassFresnel       = Color(0x88FFFFFF)   // edge glow
+val GlassFresnelSoft   = Color(0x22FFFFFF)
+val GlassInnerShadow   = Color(0x33000000)
+val GlassChromaticR    = Color(0x30EC4899)   // merah muda (kiri)
+val GlassChromaticC    = Color(0x3022D3EE)   // cyan (kanan)
+val GlassChromaticV    = Color(0x2A8B5CF6)   // ungu (tengah)
+val GlassAmbient       = Color(0x33000000)
