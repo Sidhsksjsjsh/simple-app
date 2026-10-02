@@ -1,6 +1,6 @@
 {
-  "versionCode": 2011,
-  "versionName": "5.4.3",
+  "versionCode": 2012,
+  "versionName": "5.4.4",
   "apkUrl": "https://github.com/Sidhsksjsjsh/simple-app/releases/download/v5.4.3/app-release.apk",
   "changelog": "- Adding GMS support\n- Fixing downloading issue",
   "mandatory": false
