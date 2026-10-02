@@ -1,7 +1,7 @@
 {
   "versionCode": 2010,
   "versionName": "5.4.2",
-  "apkUrl": "https://github.com/Sidhsksjsjsh/simple-app/releases/download/v5.4.1/app-release.apk",
+  "apkUrl": "https://github.com/Sidhsksjsjsh/simple-app/releases/download/v5.4.2/app-release.apk",
   "changelog": "- Fix downloading loop\n\nUSER SHOULD UPDATE THE APP TO PREVENT ANY BUGS",
   "mandatory": false
 }
