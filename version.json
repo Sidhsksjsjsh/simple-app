@@ -1,7 +1,7 @@
 {
-  "versionCode": 2010,
-  "versionName": "5.4.2",
-  "apkUrl": "https://github.com/Sidhsksjsjsh/simple-app/releases/download/v5.4.2/app-release.apk",
-  "changelog": "- Fix downloading loop\n\nUSER SHOULD UPDATE THE APP TO PREVENT ANY BUGS",
+  "versionCode": 2011,
+  "versionName": "5.4.3",
+  "apkUrl": "https://github.com/Sidhsksjsjsh/simple-app/releases/download/v5.4.3/app-release.apk",
+  "changelog": "- Adding GMS support\n- Fixing downloading issue",
   "mandatory": false
 }
